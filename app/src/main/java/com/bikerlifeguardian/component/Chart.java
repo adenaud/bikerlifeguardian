@@ -1,4 +1,4 @@
-package anthonydenaudcom.bikerlifeguardian.component;
+package com.bikerlifeguardian.component;
 
 import android.content.Context;
 

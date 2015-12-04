@@ -5,11 +5,11 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "anthonydenaudcom.bikerlifeguardian"
+        applicationId "com.bikerlifeguardian"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "1.0-alpha1"
     }
     buildTypes {
         release {
@@ -26,4 +26,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
+    compile 'org.roboguice:roboguice:3.0.1'
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    provided 'org.roboguice:roboblender:3.0.1'
+    compile 'com.google.code.gson:gson:2.5'
 }
