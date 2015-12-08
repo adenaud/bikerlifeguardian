@@ -3,6 +3,7 @@ package com.bikerlifeguardian.dao;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bikerlifeguardian.model.UserData;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -16,7 +17,7 @@ import com.bikerlifeguardian.model.Record;
 @Singleton
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "blg.db";
 
     @Inject
@@ -35,6 +36,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-
+        try {
+            if(oldVersion == 1 && newVersion == 2){
+                TableUtils.createTable(connectionSource, UserData.class);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
