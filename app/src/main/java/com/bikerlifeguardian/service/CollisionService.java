@@ -13,13 +13,12 @@ import android.os.Bundle;
 import com.bikerlifeguardian.dao.RecordDao;
 import com.bikerlifeguardian.event.CollisionListener;
 import com.bikerlifeguardian.model.Record;
+import com.bikerlifeguardian.network.TcpBlgClient;
 import com.google.inject.Inject;
 
 public class CollisionService implements SensorEventListener, LocationListener {
 
     private Context context;
-
-    private RecordDao recordDao;
 
     private CollisionListener collisionListener;
 
@@ -30,9 +29,11 @@ public class CollisionService implements SensorEventListener, LocationListener {
     private float collisionThreshold;
 
     @Inject
-    public CollisionService(Context context, RecordDao recordDao){
+    private RecordDao recordDao;
+
+    @Inject
+    public CollisionService(Context context){
         this.context = context;
-        this.recordDao = recordDao;
     }
 
     public void initSensors() {

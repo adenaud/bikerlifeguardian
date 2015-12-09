@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Biker Life Guardian</string>
+
+    <string name="personal_details">Informations personnelles</string>
+    <string name="firstname">Prénom</string>
+    <string name="lastname">Nom</string>
+    <string name="birthdate">Date de naissance</string>
+    <string name="sex">Sexe</string>
+    <string name="bloodGroup">Groupe Sanguin</string>
+    <string name="phone">Téléphone</string>
+    <string name="languages">Langues parlées</string>
+    <string name="allergies">Allergies</string>
+    <string name="medicines">Médicament Pris</string>
+    <string name="health_issues">Problèmes de santé</string>
+    <string name="legal_rep">Représenant légal</string>
+    <string name="comments">Commentaires</string>
+    <string name="male">Mr</string>
+    <string name="female">Mme</string>
+    <string name="title_activity_form">FormActivity</string>
+    <string name="save">Enregistrer</string>
+    <string name="OK">OK</string>
+
 </resources>
