@@ -111,16 +111,16 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
             } else if (userData.getGender() == 0) {
                 radioFemale.setChecked(true);
             }
-            textFirstname.setText(userData.getFirstName());
-            textLastname.setText(userData.getLastName());
+            textFirstname.setText(userData.getFirstname());
+            textLastname.setText(userData.getLastname());
             textPhone.setText(userData.getPhone());
-            textLanguages.setText(userData.getLangages());
+            textLanguages.setText(userData.getLanguages());
             textAllergies.setText(userData.getAllergies());
             textMedicines.setText(userData.getMedicines());
             textRepLegalFirstname.setText(userData.getRepLegalFirstname());
             textRepLegalLastName.setText(userData.getRepLegalLastname());
             textRepLegalPhone.setText(userData.getRepLegalPhone());
-            textComment.setText(userData.getComents());
+            textComment.setText(userData.getComments());
 
             medicines = new ArrayList<>();
             medicines.addAll(deserializeLists(userData.getMedicines()));
@@ -129,7 +129,7 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
             allergies.addAll(deserializeLists(userData.getAllergies()));
 
             languages = new ArrayList<>();
-            languages.addAll(deserializeLists(userData.getLangages()));
+            languages.addAll(deserializeLists(userData.getLanguages()));
         }
     }
 
@@ -160,16 +160,16 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
             error = true;
         }
 
-        userData.setFirstName(textFirstname.getText().toString());
-        userData.setLastName(textLastname.getText().toString());
+        userData.setFirstname(textFirstname.getText().toString());
+        userData.setLastname(textLastname.getText().toString());
         userData.setPhone(textPhone.getText().toString());
         userData.setRepLegalFirstname(textRepLegalFirstname.getText().toString());
         userData.setRepLegalLastname(textRepLegalLastName.getText().toString());
         userData.setRepLegalPhone(textRepLegalPhone.getText().toString());
-        userData.setComents(textComment.getText().toString());
+        userData.setComments(textComment.getText().toString());
         userData.setAllergies(seriralizeLists(allergies));
         userData.setMedicines(seriralizeLists(medicines));
-        userData.setLangages(seriralizeLists(languages));
+        userData.setLanguages(seriralizeLists(languages));
 
 
         if (!error) {

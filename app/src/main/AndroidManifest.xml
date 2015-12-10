@@ -27,6 +27,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bikerlifeguardian.MainActivity" />
         </activity>
+        <activity android:name=".RunActivity" >
+        </activity>
     </application>
 
 </manifest>

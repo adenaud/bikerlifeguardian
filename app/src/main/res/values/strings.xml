@@ -18,6 +18,10 @@
     <string name="female">Mme</string>
     <string name="title_activity_form">FormActivity</string>
     <string name="save">Enregistrer</string>
+
     <string name="OK">OK</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 
 </resources>
