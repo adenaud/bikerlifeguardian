@@ -11,12 +11,16 @@ public class UserData implements Parcelable {
 
     @DatabaseField(generatedId = true)
     private int id;
+
+    @DatabaseField
+    private String uuid;
+
     @DatabaseField
     private int gender;
     @DatabaseField
-    private String firstName;
+    private String firstname;
     @DatabaseField
-    private String lastName;
+    private String lastname;
     @DatabaseField
     private Date birthDate;
     @DatabaseField
@@ -24,7 +28,7 @@ public class UserData implements Parcelable {
     @DatabaseField
     private String phone;
     @DatabaseField
-    private String langages;
+    private String languages;
     @DatabaseField
     private String allergies;
     @DatabaseField
@@ -38,7 +42,11 @@ public class UserData implements Parcelable {
     @DatabaseField
     private String repLegalPhone;
     @DatabaseField
-    private String coments;
+    private String comments;
+    @DatabaseField
+    private String email;
+    @DatabaseField
+    private String password;
 
     public UserData(){
 
@@ -47,19 +55,19 @@ public class UserData implements Parcelable {
     protected UserData(Parcel in) {
         id = in.readInt();
         gender = in.readInt();
-        firstName = in.readString();
-        lastName = in.readString();
+        firstname = in.readString();
+        lastname = in.readString();
         bloodGroup = in.readString();
         phone = in.readString();
         birthDate = (Date) in.readSerializable();
-        langages = in.readString();
+        languages = in.readString();
         allergies = in.readString();
         medicines = in.readString();
         healthIssues = in.readString();
         repLegalFirstname = in.readString();
         repLegalLastname = in.readString();
         repLegalPhone = in.readString();
-        coments = in.readString();
+        comments = in.readString();
     }
 
     public static final Creator<UserData> CREATOR = new Creator<UserData>() {
@@ -82,20 +90,20 @@ public class UserData implements Parcelable {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public Date getBirthDate() {
@@ -122,12 +130,12 @@ public class UserData implements Parcelable {
         this.phone = phone;
     }
 
-    public String getLangages() {
-        return langages;
+    public String getLanguages() {
+        return languages;
     }
 
-    public void setLangages(String langages) {
-        this.langages = langages;
+    public void setLanguages(String languages) {
+        this.languages = languages;
     }
 
     public String getAllergies() {
@@ -170,12 +178,12 @@ public class UserData implements Parcelable {
         this.repLegalLastname = repLegalLastname;
     }
 
-    public String getComents() {
-        return coments;
+    public String getComments() {
+        return comments;
     }
 
-    public void setComents(String coments) {
-        this.coments = coments;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public int getGender() {
@@ -194,6 +202,30 @@ public class UserData implements Parcelable {
         this.repLegalPhone = repLegalPhone;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public int describeContents() {
         return id;
@@ -203,18 +235,18 @@ public class UserData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeInt(gender);
-        dest.writeString(firstName);
-        dest.writeString(lastName);
+        dest.writeString(firstname);
+        dest.writeString(lastname);
         dest.writeString(bloodGroup);
         dest.writeString(phone);
         dest.writeSerializable(birthDate);
-        dest.writeString(langages);
+        dest.writeString(languages);
         dest.writeString(allergies);
         dest.writeString(medicines);
         dest.writeString(healthIssues);
         dest.writeString(repLegalFirstname);
         dest.writeString(repLegalLastname);
         dest.writeString(repLegalPhone);
-        dest.writeString(coments);
+        dest.writeString(comments);
     }
 }

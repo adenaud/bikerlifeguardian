@@ -17,7 +17,7 @@ import com.bikerlifeguardian.model.Record;
 @Singleton
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "blg.db";
 
     @Inject
@@ -29,6 +29,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
             TableUtils.createTable(connectionSource, Record.class);
+            TableUtils.createTable(connectionSource, UserData.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -36,12 +37,5 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        try {
-            if(oldVersion == 1 && newVersion == 2){
-                TableUtils.createTable(connectionSource, UserData.class);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }
