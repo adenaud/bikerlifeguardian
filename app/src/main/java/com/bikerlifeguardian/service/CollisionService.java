@@ -30,6 +30,8 @@ public class CollisionService implements SensorEventListener, LocationListener {
 
     @Inject
     private RecordDao recordDao;
+    private SensorManager sensorManager;
+    private LocationManager locationManager;
 
     @Inject
     public CollisionService(Context context){
@@ -37,8 +39,8 @@ public class CollisionService implements SensorEventListener, LocationListener {
     }
 
     public void initSensors() {
-        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if(sensor != null){
@@ -110,5 +112,14 @@ public class CollisionService implements SensorEventListener, LocationListener {
 
     public void setCollisionListener(CollisionListener collisionListener) {
         this.collisionListener = collisionListener;
+    }
+
+    public void stop() {
+        sensorManager.unregisterListener(this);
+        try {
+            locationManager.removeUpdates(this);
+        }catch(SecurityException e){
+            e.printStackTrace();
+        }
     }
 }

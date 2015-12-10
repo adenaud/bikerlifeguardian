@@ -19,6 +19,9 @@ public class RunActivity extends RoboActionBarActivity implements CollisionListe
     @InjectView(R.id.btn_stop)
     private Button btnStop;
 
+    @InjectView(R.id.btn_cancel)
+    private Button btnCancel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,17 +31,36 @@ public class RunActivity extends RoboActionBarActivity implements CollisionListe
         collisionService.setCollisionListener(this);
 
         btnStop.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        end();
+        super.onBackPressed();
     }
 
     @Override
     public void onCollision() {
-
+        btnStop.setVisibility(View.GONE);
+        btnCancel.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onClick(View v) {
-        if( v == btnStop){
-            finishActivity(RESULT_OK);
+        if (v == btnStop) {
+            end();
+        }
+        if (v == btnCancel) {
+            btnCancel.setVisibility(View.GONE);
+            btnStop.setVisibility(View.VISIBLE);
         }
     }
+
+    private void end() {
+        collisionService.stop();
+        setResult(RESULT_OK);
+        finish();
+    }
+
 }
