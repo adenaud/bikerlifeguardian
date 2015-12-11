@@ -13,7 +13,6 @@ import android.os.Bundle;
 import com.bikerlifeguardian.dao.RecordDao;
 import com.bikerlifeguardian.event.CollisionListener;
 import com.bikerlifeguardian.model.Record;
-import com.bikerlifeguardian.network.TcpBlgClient;
 import com.google.inject.Inject;
 
 public class CollisionService implements SensorEventListener, LocationListener {
@@ -32,6 +31,8 @@ public class CollisionService implements SensorEventListener, LocationListener {
     private RecordDao recordDao;
     private SensorManager sensorManager;
     private LocationManager locationManager;
+    private double latitude;
+    private double longitude;
 
     @Inject
     public CollisionService(Context context){
@@ -44,7 +45,7 @@ public class CollisionService implements SensorEventListener, LocationListener {
 
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if(sensor != null){
-            collisionThreshold = (float) (sensor.getMaximumRange() - 0.2);
+            collisionThreshold = (float) (sensor.getMaximumRange() - 0.5);
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
@@ -72,7 +73,7 @@ public class CollisionService implements SensorEventListener, LocationListener {
 
             if(cx > collisionThreshold || cy > collisionThreshold || cz > collisionThreshold){
                 if(collisionListener != null){
-                    collisionListener.onCollision();
+                    collisionListener.onCollision(latitude,longitude,speed);
                 }
             }
             x = cx;
@@ -92,6 +93,9 @@ public class CollisionService implements SensorEventListener, LocationListener {
         }else{
             speed = -1;
         }
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+
 
     }
 

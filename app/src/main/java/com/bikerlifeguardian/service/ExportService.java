@@ -32,7 +32,6 @@ public class ExportService {
         for(int i = 0; i < pages; i++){
             List<Record> records = recordDao.selectRange(start, length);
             String json =  new Gson().toJson(records);
-            Api.save(json);
             start += length;
 
         }

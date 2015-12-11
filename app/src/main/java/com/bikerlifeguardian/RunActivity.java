@@ -5,8 +5,12 @@ import android.view.View;
 import android.widget.Button;
 
 import com.bikerlifeguardian.event.CollisionListener;
+import com.bikerlifeguardian.service.AlertService;
 import com.bikerlifeguardian.service.CollisionService;
 import com.google.inject.Inject;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.InjectView;
@@ -15,6 +19,9 @@ public class RunActivity extends RoboActionBarActivity implements CollisionListe
 
     @Inject
     private CollisionService collisionService;
+
+    @Inject
+    private AlertService alertService;
 
     @InjectView(R.id.btn_stop)
     private Button btnStop;
@@ -41,9 +48,18 @@ public class RunActivity extends RoboActionBarActivity implements CollisionListe
     }
 
     @Override
-    public void onCollision() {
+    public void onCollision(final double latitude, final double longitude, final double speed) {
         btnStop.setVisibility(View.GONE);
         btnCancel.setVisibility(View.VISIBLE);
+
+        Timer alertTimer = new Timer();
+        alertTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                alertService.sendAlert("2d931510-d99f-494a-8c67-87feb05e1594",latitude,longitude,speed);
+            }
+        },2000);
+
     }
 
     @Override
