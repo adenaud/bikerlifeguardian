@@ -127,7 +127,8 @@
                 <ImageButton
                     android:id="@+id/buttonAddLanguage"
                     android:layout_width="48dp"
-                    android:layout_height="32dp" />
+                    android:layout_height="48dp"
+                    android:background="@drawable/ic_add"/>
             </LinearLayout>
 
             <TextView
@@ -151,7 +152,8 @@
                 <ImageButton
                     android:id="@+id/buttonAddMedicine"
                     android:layout_width="48dp"
-                    android:layout_height="32dp" />
+                    android:layout_height="48dp"
+                    android:background="@drawable/ic_add"/>
             </LinearLayout>
 
             <TextView
@@ -176,7 +178,8 @@
                 <ImageButton
                     android:id="@+id/buttonAddAllergie"
                     android:layout_width="48dp"
-                    android:layout_height="32dp" />
+                    android:layout_height="48dp"
+                    android:background="@drawable/ic_add"/>
             </LinearLayout>
 
             <EditText

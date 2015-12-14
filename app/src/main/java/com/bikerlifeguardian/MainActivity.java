@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.bikerlifeguardian.service.ExportService;
 import com.google.inject.Inject;
@@ -17,14 +18,8 @@ public class MainActivity extends RoboActionBarActivity implements View.OnClickL
     @Inject
     private ExportService exportService;
 
-    @InjectView(R.id.btn_export)
-    private Button btnExport;
-
-    @InjectView(R.id.btn_drop)
-    private Button btnDrop;
-
     @InjectView(R.id.btn_details)
-    private Button btnDetails;
+    private ImageButton btnDetails;
 
     @InjectView(R.id.btn_start)
     private Button btnStart;
@@ -34,8 +29,6 @@ public class MainActivity extends RoboActionBarActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnExport.setOnClickListener(this);
-        btnDrop.setOnClickListener(this);
         btnDetails.setOnClickListener(this);
         btnStart.setOnClickListener(this);
     }
@@ -43,12 +36,6 @@ public class MainActivity extends RoboActionBarActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
 
-        if(v == btnExport){
-            exportService.exportAll();
-        }
-        if(v == btnDrop){
-            exportService.drop();
-        }
         if(v == btnDetails){
             Intent intent = new Intent(this,FormActivity.class);
             startActivityForResult(intent, Codes.REQUEST_FORM);
