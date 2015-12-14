@@ -10,21 +10,20 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.bikerlifeguardian.R;
 import com.bikerlifeguardian.dao.RecordDao;
 import com.bikerlifeguardian.event.CollisionListener;
-import com.bikerlifeguardian.model.Record;
 import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CollisionService implements SensorEventListener, LocationListener {
 
-    private Context context;
-
+    private final Context context;
     private CollisionListener collisionListener;
 
-    private float x;
-    private float y;
-    private float z;
-    private float speed;
+    private final List<Float> speeds;
     private float collisionThreshold;
 
     @Inject
@@ -33,25 +32,36 @@ public class CollisionService implements SensorEventListener, LocationListener {
     private LocationManager locationManager;
     private double latitude;
     private double longitude;
+    private boolean alerted;
 
     @Inject
-    public CollisionService(Context context){
+    public CollisionService(Context context) {
         this.context = context;
+        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        speeds = new ArrayList<>();
+
+    }
+
+    public boolean isPhoneCompatible() {
+        boolean isCompatible = false;
+        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (sensor != null && sensor.getMaximumRange() > context.getResources().getInteger(R.integer.min_ms2)) {
+            isCompatible = true;
+        }
+        return isCompatible;
     }
 
     public void initSensors() {
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if(sensor != null){
+        if (sensor != null) {
             collisionThreshold = (float) (sensor.getMaximumRange() - 0.5);
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,200,0,this);
-        }catch(SecurityException e){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
+        } catch (SecurityException e) {
             e.printStackTrace();
         }
     }
@@ -60,25 +70,39 @@ public class CollisionService implements SensorEventListener, LocationListener {
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
 
-        if(sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             final float cx = event.values[0];
             final float cy = event.values[1];
             final float cz = event.values[2];
 
-            double recordThreshold =  3.5;
-
-            if(Math.abs(cx - x) > recordThreshold || Math.abs(cy - y) > recordThreshold || Math.abs(cz - z) > recordThreshold){
-                recordDao.save(new Record(cx,cy,cz,0));
-            }
-
-            if(cx > collisionThreshold || cy > collisionThreshold || cz > collisionThreshold){
-                if(collisionListener != null){
-                    collisionListener.onCollision(latitude,longitude,speed);
+            if (!alerted && (cx > collisionThreshold || cy > collisionThreshold || cz > collisionThreshold)) {
+                if (collisionListener != null) {
+                    float averageSpeed = getAverageSpeed();
+                    alerted = true;
+                    collisionListener.onCollision(latitude, longitude, averageSpeed);
                 }
             }
-            x = cx;
-            y = cy;
-            z = cz;
+        }
+    }
+
+    public void reset(){
+        synchronized (speeds){
+            speeds.clear();
+        }
+        alerted = false;
+    }
+
+    private float getAverageSpeed() {
+        float total = 0;
+        for (Float speed : speeds){
+            total += speed;
+        }
+
+        if(speeds.size() == 0){
+            return 0;
+        }
+        else {
+            return total / speeds.size();
         }
     }
 
@@ -88,15 +112,18 @@ public class CollisionService implements SensorEventListener, LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        if(location.hasSpeed()){
-            speed = location.getSpeed();
-        }else{
-            speed = -1;
+        synchronized (speeds) {
+            if (speeds.size() == 5) {
+                speeds.remove(speeds.get(0));
+            }
+            if (location.hasSpeed()) {
+                speeds.add(location.getSpeed());
+            } else {
+                speeds.add(-1f);
+            }
         }
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-
-
     }
 
     @Override
@@ -122,7 +149,7 @@ public class CollisionService implements SensorEventListener, LocationListener {
         sensorManager.unregisterListener(this);
         try {
             locationManager.removeUpdates(this);
-        }catch(SecurityException e){
+        } catch (SecurityException e) {
             e.printStackTrace();
         }
     }
