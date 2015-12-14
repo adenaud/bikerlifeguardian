@@ -37,6 +37,14 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
     @InjectView(R.id.text_lastname)
     private EditText textLastname;
 
+
+    @InjectView(R.id.text_email)
+    private EditText textEmail;
+
+    @InjectView(R.id.text_password)
+    private EditText textPassword;
+
+
     @InjectView(R.id.text_phone)
     private EditText textPhone;
 
