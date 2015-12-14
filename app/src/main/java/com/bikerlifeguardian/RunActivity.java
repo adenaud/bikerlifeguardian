@@ -57,8 +57,9 @@ public class RunActivity extends RoboActionBarActivity implements CollisionListe
             @Override
             public void run() {
                 alertService.sendAlert("2d931510-d99f-494a-8c67-87feb05e1594",latitude,longitude,speed);
+                collisionService.reset();
             }
-        },2000);
+        },getResources().getInteger(R.integer.cancel_delay));
 
     }
 

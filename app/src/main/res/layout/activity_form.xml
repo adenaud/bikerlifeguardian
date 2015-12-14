@@ -70,6 +70,23 @@
                 android:inputType="textPersonName" />
 
             <EditText
+                android:hint="@string/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:id="@+id/text_email"
+                android:layout_gravity="center_horizontal" />
+
+            <EditText
+                android:hint="@string/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/text_password" />
+
+            <EditText
                 android:id="@+id/text_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
