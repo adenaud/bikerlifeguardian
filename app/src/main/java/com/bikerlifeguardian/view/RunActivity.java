@@ -1,9 +1,10 @@
-package com.bikerlifeguardian;
+package com.bikerlifeguardian.view;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.bikerlifeguardian.R;
 import com.bikerlifeguardian.event.CollisionListener;
 import com.bikerlifeguardian.service.AlertService;
 import com.bikerlifeguardian.service.CollisionService;

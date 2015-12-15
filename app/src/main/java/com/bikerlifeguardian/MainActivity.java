@@ -1,12 +1,16 @@
 package com.bikerlifeguardian;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.bikerlifeguardian.service.ExportService;
+import com.bikerlifeguardian.view.FormActivity;
+import com.bikerlifeguardian.view.LoginActivity;
+import com.bikerlifeguardian.view.RunActivity;
 import com.google.inject.Inject;
 
 import roboguice.activity.RoboActionBarActivity;
@@ -31,6 +35,14 @@ public class MainActivity extends RoboActionBarActivity implements View.OnClickL
 
         btnDetails.setOnClickListener(this);
         btnStart.setOnClickListener(this);
+
+        SharedPreferences preferences = getSharedPreferences(this.getClass().getPackage().getName(), MODE_PRIVATE);
+        if(preferences.getBoolean("firstrun",true)){
+            preferences.edit().putBoolean("firstrun",false).commit();
+
+        }
+        Intent intent = new Intent(this,LoginActivity.class);
+        startActivityForResult(intent,Codes.REQUEST_LOGIN);
     }
 
     @Override

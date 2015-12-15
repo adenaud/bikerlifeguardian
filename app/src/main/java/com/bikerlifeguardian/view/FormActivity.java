@@ -1,4 +1,4 @@
-package com.bikerlifeguardian;
+package com.bikerlifeguardian.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import com.bikerlifeguardian.R;
 import com.bikerlifeguardian.adapter.BloodGroupArrayAdapter;
 import com.bikerlifeguardian.dao.UserDataDao;
 import com.bikerlifeguardian.event.OnPromptDialogCloseListener;

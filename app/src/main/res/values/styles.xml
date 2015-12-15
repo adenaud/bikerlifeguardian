@@ -18,6 +18,9 @@
         <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">30sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
 
+    <style name="LinkBtn" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/colorLink</item>
     </style>
 </resources>

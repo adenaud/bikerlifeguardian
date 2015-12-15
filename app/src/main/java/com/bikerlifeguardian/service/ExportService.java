@@ -13,11 +13,14 @@ import java.util.List;
 public class ExportService {
 
     @Inject
+    private Api api;
+
+    @Inject
     private RecordDao recordDao;
 
     public void drop(){
         recordDao.drop();
-        Api.drop();
+        api.drop();
     }
 
     public void exportAll(){
