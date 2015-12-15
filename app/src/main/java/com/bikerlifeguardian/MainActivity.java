@@ -37,12 +37,12 @@ public class MainActivity extends RoboActionBarActivity implements View.OnClickL
         btnStart.setOnClickListener(this);
 
         SharedPreferences preferences = getSharedPreferences(this.getClass().getPackage().getName(), MODE_PRIVATE);
-        if(preferences.getBoolean("firstrun",true)){
+        if(preferences.getBoolean("firstrun",true) || preferences.getString("uuid","").length() == 0){
             preferences.edit().putBoolean("firstrun",false).commit();
-
+            Intent intent = new Intent(this,LoginActivity.class);
+            startActivityForResult(intent, Codes.REQUEST_LOGIN);
         }
-        Intent intent = new Intent(this,LoginActivity.class);
-        startActivityForResult(intent,Codes.REQUEST_LOGIN);
+
     }
 
     @Override
