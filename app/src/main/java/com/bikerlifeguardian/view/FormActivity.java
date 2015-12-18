@@ -2,6 +2,7 @@ package com.bikerlifeguardian.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,9 +14,9 @@ import android.widget.Spinner;
 
 import com.bikerlifeguardian.R;
 import com.bikerlifeguardian.adapter.BloodGroupArrayAdapter;
-import com.bikerlifeguardian.dao.UserDataDao;
 import com.bikerlifeguardian.event.OnPromptDialogCloseListener;
 import com.bikerlifeguardian.model.UserData;
+import com.bikerlifeguardian.service.UserService;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -27,10 +28,10 @@ import roboguice.inject.InjectView;
 
 public class FormActivity extends RoboActionBarActivity implements View.OnClickListener {
 
-    private UserData userData;
+    private UserData currentUserData;
 
     @Inject
-    private UserDataDao userDataDao;
+    private UserService userService;
 
     @InjectView(R.id.text_firstname)
     private EditText textFirstname;
@@ -97,6 +98,7 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
     private List<String> languages;
     private List<String> allergies;
     private List<String> medicines;
+    private String uuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,34 +113,39 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
         btnAddAllergie.setOnClickListener(this);
         btnAddMedicine.setOnClickListener(this);
 
-        userData = userDataDao.read();
+        uuid = getIntent().getStringExtra("uuid");
 
-        if (userData != null) {
+        new ReadUserDataTask().execute((Void) null);
+    }
 
-            if (userData.getGender() == 1) {
+    private void fillForm() {
+        if (currentUserData != null) {
+
+            if (currentUserData.getGender() == 1) {
                 radioMale.setChecked(true);
-            } else if (userData.getGender() == 0) {
+            } else if (currentUserData.getGender() == 0) {
                 radioFemale.setChecked(true);
             }
-            textFirstname.setText(userData.getFirstname());
-            textLastname.setText(userData.getLastname());
-            textPhone.setText(userData.getPhone());
-            textLanguages.setText(userData.getLanguages());
-            textAllergies.setText(userData.getAllergies());
-            textMedicines.setText(userData.getMedicines());
-            textRepLegalFirstname.setText(userData.getRepLegalFirstname());
-            textRepLegalLastName.setText(userData.getRepLegalLastname());
-            textRepLegalPhone.setText(userData.getRepLegalPhone());
-            textComment.setText(userData.getComments());
+            textFirstname.setText(currentUserData.getFirstname());
+            textLastname.setText(currentUserData.getLastname());
+            textEmail.setText(currentUserData.getEmail());
+            textPhone.setText(currentUserData.getPhone());
+            textLanguages.setText(currentUserData.getLanguages());
+            textAllergies.setText(currentUserData.getAllergies());
+            textMedicines.setText(currentUserData.getMedicines());
+            textRepLegalFirstname.setText(currentUserData.getRepLegalFirstname());
+            textRepLegalLastName.setText(currentUserData.getRepLegalLastname());
+            textRepLegalPhone.setText(currentUserData.getRepLegalPhone());
+            textComment.setText(currentUserData.getComments());
 
             medicines = new ArrayList<>();
-            medicines.addAll(deserializeLists(userData.getMedicines()));
+            medicines.addAll(deserializeLists(currentUserData.getMedicines()));
 
             allergies = new ArrayList<>();
-            allergies.addAll(deserializeLists(userData.getAllergies()));
+            allergies.addAll(deserializeLists(currentUserData.getAllergies()));
 
             languages = new ArrayList<>();
-            languages.addAll(deserializeLists(userData.getLanguages()));
+            languages.addAll(deserializeLists(currentUserData.getLanguages()));
         }
     }
 
@@ -149,7 +156,7 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
         return new ArrayList<>();
     }
 
-    private String seriralizeLists(List<String> stringList) {
+    private String serializeLists(List<String> stringList) {
         return TextUtils.join(",", stringList);
     }
 
@@ -157,34 +164,38 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
 
         boolean error = false;
 
-        if (userData == null) {
-            userData = new UserData();
+        if (currentUserData == null) {
+            currentUserData = new UserData();
         }
 
         if (radioMale.isChecked()) {
-            userData.setGender(1);
+            currentUserData.setGender(1);
         } else if (radioFemale.isChecked()) {
-            userData.setGender(0);
+            currentUserData.setGender(0);
         } else {
             error = true;
         }
 
-        userData.setFirstname(textFirstname.getText().toString());
-        userData.setLastname(textLastname.getText().toString());
-        userData.setPhone(textPhone.getText().toString());
-        userData.setRepLegalFirstname(textRepLegalFirstname.getText().toString());
-        userData.setRepLegalLastname(textRepLegalLastName.getText().toString());
-        userData.setRepLegalPhone(textRepLegalPhone.getText().toString());
-        userData.setComments(textComment.getText().toString());
-        userData.setAllergies(seriralizeLists(allergies));
-        userData.setMedicines(seriralizeLists(medicines));
-        userData.setLanguages(seriralizeLists(languages));
+        if(textPassword.getText().toString().length() > 0){
+            currentUserData.setPassword(textPassword.getText().toString());
+        }else{
+            currentUserData.setPassword(null);
+        }
+
+        currentUserData.setFirstname(textFirstname.getText().toString());
+        currentUserData.setLastname(textLastname.getText().toString());
+        currentUserData.setPhone(textPhone.getText().toString());
+        currentUserData.setRepLegalFirstname(textRepLegalFirstname.getText().toString());
+        currentUserData.setRepLegalLastname(textRepLegalLastName.getText().toString());
+        currentUserData.setRepLegalPhone(textRepLegalPhone.getText().toString());
+        currentUserData.setComments(textComment.getText().toString());
+        currentUserData.setAllergies(serializeLists(allergies));
+        currentUserData.setMedicines(serializeLists(medicines));
+        currentUserData.setLanguages(serializeLists(languages));
 
 
         if (!error) {
-            userDataDao.save(userData);
-            setResult(RESULT_OK, null);
-            finish();
+            new SaveUserdataTask().execute((Void) null);
         }
     }
 
@@ -200,7 +211,7 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
                 @Override
                 public void onClose(String input) {
                     languages.add(input);
-                    textLanguages.setText(seriralizeLists(languages));
+                    textLanguages.setText(serializeLists(languages));
                 }
             });
         }
@@ -209,7 +220,7 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
                 @Override
                 public void onClose(String input) {
                     medicines.add(input);
-                    textMedicines.setText(seriralizeLists(medicines));
+                    textMedicines.setText(serializeLists(medicines));
                 }
             });
         }
@@ -218,7 +229,7 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
                 @Override
                 public void onClose(String input) {
                     allergies.add(input);
-                    textAllergies.setText(seriralizeLists(allergies));
+                    textAllergies.setText(serializeLists(allergies));
                 }
             });
         }
@@ -236,5 +247,45 @@ public class FormActivity extends RoboActionBarActivity implements View.OnClickL
             }
         });
         builder.show();
+    }
+
+    public class ReadUserDataTask extends AsyncTask<Void, Void, UserData>{
+
+        @Override
+        protected UserData doInBackground(Void... params) {
+            return userService.getProfile(uuid);
+        }
+
+        @Override
+        protected void onPostExecute(final UserData userData) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    currentUserData = userData;
+                    fillForm();
+                }
+            });
+        }
+    }
+
+    public class SaveUserdataTask extends AsyncTask<Void, Void, Integer>{
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            return userService.saveProfile(currentUserData);
+        }
+
+        @Override
+        protected void onPostExecute(final Integer result) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(result == 0){
+                        setResult(RESULT_OK, null);
+                        finish();
+                    }
+                }
+            });
+        }
     }
 }

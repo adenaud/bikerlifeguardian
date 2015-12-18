@@ -11,13 +11,16 @@ public class AlertService {
     @Inject
     private Api api;
 
-    public void sendAlert(String userUuid, double latitude, double longitude, double speed){
+    public String sendAlert(String userUuid, double latitude, double longitude, double speed){
         Alert alert = new Alert();
         alert.setUser_uuid(userUuid);
         alert.setLatitude(latitude);
         alert.setLongitude(longitude);
         alert.setSpeed(speed);
-        api.sendAlert(alert);
+        return api.sendAlert(alert);
     }
 
+    public void cancelAlert(String uuid) {
+        api.cancelAlert(uuid);
+    }
 }

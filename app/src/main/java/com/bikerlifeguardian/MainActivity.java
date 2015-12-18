@@ -7,7 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.bikerlifeguardian.model.UserData;
 import com.bikerlifeguardian.service.ExportService;
+import com.bikerlifeguardian.service.UserService;
 import com.bikerlifeguardian.view.FormActivity;
 import com.bikerlifeguardian.view.LoginActivity;
 import com.bikerlifeguardian.view.RunActivity;
@@ -20,6 +22,9 @@ import roboguice.util.Ln;
 public class MainActivity extends RoboActionBarActivity implements View.OnClickListener {
 
     @Inject
+    private UserService userService;
+
+    @Inject
     private ExportService exportService;
 
     @InjectView(R.id.btn_details)
@@ -27,6 +32,7 @@ public class MainActivity extends RoboActionBarActivity implements View.OnClickL
 
     @InjectView(R.id.btn_start)
     private Button btnStart;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +42,7 @@ public class MainActivity extends RoboActionBarActivity implements View.OnClickL
         btnDetails.setOnClickListener(this);
         btnStart.setOnClickListener(this);
 
-        SharedPreferences preferences = getSharedPreferences(this.getClass().getPackage().getName(), MODE_PRIVATE);
+        preferences = getSharedPreferences(this.getClass().getPackage().getName(), MODE_PRIVATE);
         if(preferences.getBoolean("firstrun",true) || preferences.getString("uuid","").length() == 0){
             preferences.edit().putBoolean("firstrun",false).commit();
             Intent intent = new Intent(this,LoginActivity.class);
@@ -49,7 +55,9 @@ public class MainActivity extends RoboActionBarActivity implements View.OnClickL
     public void onClick(View v) {
 
         if(v == btnDetails){
+            String uuid = preferences.getString("uuid","");
             Intent intent = new Intent(this,FormActivity.class);
+            intent.putExtra("uuid",uuid);
             startActivityForResult(intent, Codes.REQUEST_FORM);
         }
         if(v == btnStart){

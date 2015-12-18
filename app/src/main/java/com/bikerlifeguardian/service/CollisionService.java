@@ -18,6 +18,8 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
+import roboguice.util.Ln;
+
 public class CollisionService implements SensorEventListener, LocationListener {
 
     private final Context context;
@@ -48,6 +50,7 @@ public class CollisionService implements SensorEventListener, LocationListener {
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (sensor != null && sensor.getMaximumRange() > context.getResources().getInteger(R.integer.min_ms2)) {
             isCompatible = true;
+            Ln.d("Sensor compatible, max value : " + String.valueOf(sensor.getMaximumRange()));
         }
         return isCompatible;
     }
@@ -55,7 +58,7 @@ public class CollisionService implements SensorEventListener, LocationListener {
     public void initSensors() {
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (sensor != null) {
-            collisionThreshold = (float) (sensor.getMaximumRange() - 0.5);
+            collisionThreshold = (float) context.getResources().getInteger(R.integer.min_ms2);
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
@@ -128,17 +131,14 @@ public class CollisionService implements SensorEventListener, LocationListener {
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
     }
 
     public void setCollisionListener(CollisionListener collisionListener) {

@@ -6,6 +6,7 @@ import com.bikerlifeguardian.LoginResult;
 import com.bikerlifeguardian.model.Alert;
 import com.bikerlifeguardian.model.UserData;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
 
 import org.apache.commons.codec.binary.Hex;
@@ -30,20 +31,17 @@ import roboguice.util.Ln;
 @Singleton
 public class Api {
 
+    //private static final String API_URL = "http://blg.anthonydenaud.com/blg-server/";
     private static final String API_URL = "http://10.133.128.36:3000/";
-
 
     public String login(String username, String password) {
 
-       String resultJson = "{}";
+        String resultJson = "{}";
 
         final JSONObject jo = new JSONObject();
         try {
-            String hashedPassword = new String(Hex.encodeHex(DigestUtils.md5(password)));
-
             jo.put("identifier", username);
-            jo.put("password", hashedPassword);
-
+            jo.put("password", password);
             resultJson = post("login", jo.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -51,9 +49,29 @@ public class Api {
         return resultJson;
     }
 
-    public void sendAlert(Alert alert) {
+    public void cancelAlert(String uuid) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("uuid", uuid);
+            object.put("active",false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        put("alerts/"+uuid,object.toString());
+    }
+
+    public String sendAlert(Alert alert) {
+        String uuid = "";
         final String json = new Gson().toJson(alert);
-        post("alerts", json);
+        String resultJson = post("alerts", json);
+        Ln.d(resultJson);
+        try {
+            JSONObject object = new JSONObject(resultJson);
+            uuid = object.getString("uuid");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return uuid;
     }
 
     public int sendUserData(UserData userData) {
@@ -70,22 +88,24 @@ public class Api {
     }
 
     public UserData getUserDatas(String userUuid) {
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-dd-MM").create();
         UserData userData;
         String json = get("profile/" + userUuid);
-        userData = new Gson().fromJson(json,UserData.class);
+        userData = gson.fromJson(json, UserData.class);
         return userData;
     }
 
+
     private String get(final String api) {
-       return execute("GET",api,"");
+        return execute("GET", api, "");
     }
 
     private String post(final String api, final String body) {
-        return execute("POST",api,body);
+        return execute("POST", api, body);
     }
 
     private String put(final String api, final String body) {
-        return execute("PUT",api,body);
+        return execute("PUT", api, body);
     }
 
     public String execute(String method, String api, String body) {
@@ -146,3 +166,4 @@ public class Api {
         thread.start();
     }
 }
+
